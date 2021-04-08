@@ -17,8 +17,9 @@ import {
 } from "@material-ui/core";
 import CachedIcon from "@material-ui/icons/Cached";
 import { withStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import { usePrevious } from "./usePrevious";
 
-type TimerProps = {
+export type TimerProps = {
   name: string;
   startTime: number;
   initialDelay: number;
@@ -33,19 +34,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   bar: {
     height: theme.spacing(1),
-    transition: 'width 250ms linear',
+    transition: "width 500ms ease-in-out",
   },
   fullWidth: {
     flexGrow: 1,
   },
   failed: {
-    backgroundColor: 'red',
-  }
+    backgroundColor: "red",
+  },
 }));
 
 export default function Timer(props: TimerProps) {
   const [remainingTime, setRemainingTime] = React.useState(props.startTime);
   const [started, setStarted] = React.useState(true);
+  const previousStartTime = usePrevious<number>(props.startTime);
 
   const classes = useStyles();
   const resetTimer = () => {
@@ -70,35 +72,53 @@ export default function Timer(props: TimerProps) {
     return () => clearTimeout(timer);
   });
 
+  React.useEffect(() => {
+    if (previousStartTime !== props.startTime && started) {
+      console.log(
+        "value has changed from",
+        previousStartTime,
+        "to",
+        props.startTime
+      );
+      // setStarted(false);
+      setRemainingTime(props.startTime);
+    }
+  }, [previousStartTime, props.startTime, props.maxTime, started]);
+
   const failed = remainingTime === 0;
 
   const mixValue = remainingTime / props.maxTime;
-  const red = 255-Math.floor(255 * mixValue)
-  const green = Math.floor(255 * mixValue)
-  const percent =mixValue * 100;
+  const red = 255 - Math.floor(255 * mixValue);
+  const green = Math.floor(255 * mixValue);
+  const percent = mixValue * 100;
 
   const colorStyle = {
-    color: failed? 'unset': 'rgb('+red+', '+green+', 0)'
+    color: failed ? "unset" : "rgb(" + red + ", " + green + ", 0)",
   };
 
   const progressBarStyle = {
-    width: percent + '%',
+    width: percent + "%",
     backgroundColor: colorStyle.color,
-  }
+  };
 
   return (
-    <Card elevation={10} className={remainingTime === 0? classes.failed: undefined}>
+    <Card
+      elevation={10}
+      className={remainingTime === 0 ? classes.failed : undefined}
+    >
       <Button
         onClick={resetTimer}
         className={classes.resetTimerButton}
-        fullWidth={true}
+        fullWidth
       >
         <CardContent className={classes.fullWidth}>
-          <Typography variant="h6" style={colorStyle} color="textSecondary" gutterBottom>
+          <Typography style={colorStyle} color="textSecondary" gutterBottom>
             {props.name} {props.initialDelay}
           </Typography>
           <Typography variant="h2">{remainingTime}s</Typography>
-      <Box className={classes.bar} style={progressBarStyle}> </Box>
+          <Box className={classes.bar} style={progressBarStyle}>
+            {" "}
+          </Box>
         </CardContent>
       </Button>
     </Card>

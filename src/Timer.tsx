@@ -12,12 +12,19 @@ export type TimerProps = {
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
+  sizes: {
+    placeSelf: "center",
+    flexGrow: 1,
+    flex: 1,
+  },
   resetTimerButton: {
     flexGrow: 1,
     flex: 1,
     textTransform: "unset",
-    minWidth: '120px',
-    width: '20vw',
+  },
+  responsive: {
+    minWidth: "120px",
+    width: "25vw",
   },
   bar: {
     height: theme.spacing(1),
@@ -83,8 +90,11 @@ export default function Timer(props: TimerProps) {
   return (
     <Card
       elevation={10}
-      className={remainingTime === 0 ? classes.failed : undefined}
+      className={
+        (remainingTime === 0 ? classes.failed : "") + " " + classes.sizes
+      }
     >
+      <Box className={classes.responsive}></Box>
       <Button
         onClick={resetTimer}
         className={classes.resetTimerButton}

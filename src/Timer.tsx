@@ -1,21 +1,5 @@
-import React, { Component } from "react";
-import {
-  Drawer,
-  Checkbox,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Card,
-  CardContent,
-  Box,
-  CardActions,
-  Grid,
-  Button,
-  Typography,
-  rgbToHex,
-  recomposeColor,
-} from "@material-ui/core";
-import CachedIcon from "@material-ui/icons/Cached";
+import React from "react";
+import { Card, CardContent, Box, Button, Typography } from "@material-ui/core";
 import { Theme, makeStyles } from "@material-ui/core/styles";
 import { usePrevious } from "./usePrevious";
 

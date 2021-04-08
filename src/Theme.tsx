@@ -1,17 +1,14 @@
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import {
   Drawer,
-  Checkbox,
   AppBar,
   Toolbar,
   IconButton,
   Button,
-  Card,
   Box,
   Grid,
   CssBaseline,
-  Typography,
   TextField,
   Fab,
   Divider,
@@ -75,9 +72,7 @@ function WithTheme() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [maxTime, setMaxTime] = React.useState<number>(60);
   const [minStartTime, setMinStartTime] = React.useState<number>(40);
-  const [timers, setTimers] = React.useState<Array<TimerProps>>(
-    initialTimers
-  );
+  const [timers, setTimers] = React.useState<Array<TimerProps>>(initialTimers);
   const classes = useStyles(theme);
 
   const openDrawer = () => {

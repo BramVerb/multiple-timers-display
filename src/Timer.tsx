@@ -90,7 +90,7 @@ export default function Timer(props: TimerProps) {
       >
         <CardContent className={classes.fullWidth}>
           <Typography style={colorStyle} color="textSecondary" gutterBottom>
-            {props.name} {props.initialDelay}
+            {props.name}
           </Typography>
           <Typography variant="h2">{remainingTime}s</Typography>
           <Box className={classes.bar} style={progressBarStyle}>

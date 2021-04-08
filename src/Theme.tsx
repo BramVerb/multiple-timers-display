@@ -84,10 +84,20 @@ function WithTheme() {
   };
 
   const updateMaxTime = (e: any) => {
-    setMaxTime(e.target.value);
+    const value = parseInt(e.target.value, 10);
+    if(Number.isInteger(value)) {
+      setMaxTime(value);
+    } else {
+      setMaxTime(0);
+    }
   };
   const updateMinTime = (e: any) => {
-    setMinStartTime(e.target.value);
+    const value = parseInt(e.target.value, 10);
+    if(Number.isInteger(value)) {
+      setMinStartTime(value);
+    } else {
+      setMinStartTime(0);
+    }
   };
 
   const resetTimers = () => {
@@ -145,7 +155,7 @@ function WithTheme() {
                   variant="outlined"
                   value={maxTime}
                   onChange={updateMaxTime}
-                  InputProps={{ inputProps: { min: minStartTime } }}
+                  InputProps={{ inputProps: { min: minStartTime ?? 0 } }}
                   fullWidth
                 />
               </Grid>
@@ -155,7 +165,7 @@ function WithTheme() {
                   type="number"
                   variant="outlined"
                   value={minStartTime}
-                  InputProps={{ inputProps: { max: maxTime } }}
+                  InputProps={{ inputProps: { max: maxTime ?? 100 } }}
                   onChange={updateMinTime}
                   fullWidth
                 />

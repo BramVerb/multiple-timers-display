@@ -209,7 +209,7 @@ function WithTheme() {
             className={classes.timerContainer}
           >
             {timers.map((timer) => (
-              <Grid item key={timer.key} xs={3}>
+              <Grid item key={timer.key} xs>
                 <Timer
                   key={timer.key}
                   name={timer.name}

@@ -16,6 +16,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     flex: 1,
     textTransform: "unset",
+    minWidth: '120px',
+    width: '20vw',
   },
   bar: {
     height: theme.spacing(1),

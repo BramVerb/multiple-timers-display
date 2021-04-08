@@ -13,9 +13,12 @@ import {
   CssBaseline,
   Typography,
   TextField,
+  Fab,
   Divider,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Timer, { TimerProps } from "./Timer";
@@ -55,22 +58,25 @@ function getInitialTimers(minStartTime: number, maxStartTime: number) {
   const timers = "Air Bat Cap Drum Each Fine Gust Harp Sit Jury Krunch Look Made Near Odd Pit Quench Red Sun Trap".split(
     " "
   );
-  return timers.map((timerName) => ({
+  return timers.map((timerName, index) => ({
     name: timerName,
     startTime: Math.floor(
       Math.random() * (maxStartTime - minStartTime) + minStartTime
     ),
     initialDelay: Math.floor(Math.random() * 1000),
     maxTime: 60,
+    key: index,
   }));
 }
+
+const initialTimers = getInitialTimers(40, 60);
 
 function WithTheme() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [maxTime, setMaxTime] = React.useState<number>(60);
-  const [minStartTime, setMinStartTime] = React.useState<number>(20);
+  const [minStartTime, setMinStartTime] = React.useState<number>(40);
   const [timers, setTimers] = React.useState<Array<TimerProps>>(
-    getInitialTimers(minStartTime, maxTime)
+    initialTimers
   );
   const classes = useStyles(theme);
 
@@ -97,7 +103,26 @@ function WithTheme() {
       maxTime: maxTime,
     }));
     setTimers(newTimers);
-    console.log("newTimers", newTimers);
+  };
+  const removeTimer = (i: number) => {
+    const newTimers = [...timers];
+    newTimers.splice(i, 1);
+    setTimers(newTimers);
+  };
+
+  const updateTimerName = (i: number, e: any) => {
+    setTimers(
+      timers.map((timer, index) => {
+        if (index === i) {
+          return {
+            ...timer,
+            name: e.target.value,
+          };
+        } else {
+          return timer;
+        }
+      })
+    );
   };
 
   return (
@@ -117,7 +142,7 @@ function WithTheme() {
               <ChevronLeftIcon />
             </IconButton>
             <Divider />
-            <Grid container xs={12}>
+            <Grid container xs={12} spacing={2}>
               <Grid item xs={12} className={classes.settingsContainer}>
                 <TextField
                   label="Max Time (s)"
@@ -146,6 +171,29 @@ function WithTheme() {
                 </Button>
               </Grid>
             </Grid>
+            {timers.map((timer, i) => (
+              <Grid
+                item
+                xs={12}
+                key={timer.key}
+                className={classes.settingsContainer}
+              >
+                <TextField
+                  label={"Name " + i}
+                  type="text"
+                  variant="outlined"
+                  value={timer.name}
+                  onChange={(e) => updateTimerName(i, e)}
+                  fullWidth
+                />
+                <IconButton onClick={() => removeTimer(i)}>
+                  <DeleteIcon fontSize="large" />
+                </IconButton>
+              </Grid>
+            ))}
+            <Fab color="primary" aria-label="add">
+              <AddIcon />
+            </Fab>
           </Box>
         </Drawer>
         <main>
@@ -156,8 +204,9 @@ function WithTheme() {
             className={classes.timerContainer}
           >
             {timers.map((timer) => (
-              <Grid item xs={3}>
+              <Grid item key={timer.key} xs={3}>
                 <Timer
+                  key={timer.key}
                   name={timer.name}
                   startTime={timer.startTime}
                   initialDelay={timer.initialDelay}

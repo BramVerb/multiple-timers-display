@@ -16,7 +16,7 @@ import {
   recomposeColor,
 } from "@material-ui/core";
 import CachedIcon from "@material-ui/icons/Cached";
-import { withStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import { Theme, makeStyles } from "@material-ui/core/styles";
 import { usePrevious } from "./usePrevious";
 
 export type TimerProps = {
@@ -24,6 +24,7 @@ export type TimerProps = {
   startTime: number;
   initialDelay: number;
   maxTime: number;
+  key: number;
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -64,7 +65,6 @@ export default function Timer(props: TimerProps) {
   React.useEffect(() => {
     const timer = setTimeout(
       () => {
-        console.log(props.name, remainingTime);
         next();
       },
       started ? 1000 : props.initialDelay
@@ -74,13 +74,6 @@ export default function Timer(props: TimerProps) {
 
   React.useEffect(() => {
     if (previousStartTime !== props.startTime && started) {
-      console.log(
-        "value has changed from",
-        previousStartTime,
-        "to",
-        props.startTime
-      );
-      // setStarted(false);
       setRemainingTime(props.startTime);
     }
   }, [previousStartTime, props.startTime, props.maxTime, started]);

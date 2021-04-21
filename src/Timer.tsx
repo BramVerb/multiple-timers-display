@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     textTransform: "unset",
   },
   responsive: {
-    minWidth: "120px",
-    width: "25vw",
+    minWidth: "150px",
+    width: "20vw",
   },
   bar: {
     height: theme.spacing(1),

@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   responsive: {
     minWidth: "150px",
-    width: "20vw",
+    width: "15vw",
   },
   bar: {
     height: theme.spacing(1),
@@ -101,7 +101,7 @@ export default function Timer(props: TimerProps) {
         fullWidth
       >
         <CardContent className={classes.fullWidth}>
-          <Typography style={colorStyle} color="textSecondary" gutterBottom>
+          <Typography variant="h4" style={colorStyle} color="textSecondary" gutterBottom>
             {props.name}
           </Typography>
           <Typography variant="h2">{remainingTime}s</Typography>

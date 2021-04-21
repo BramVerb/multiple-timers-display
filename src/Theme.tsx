@@ -30,14 +30,19 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       margin: theme.spacing(0),
       textAlign: "center",
+      maxWidth: '100%',
     },
     settingsContainer: {
       padding: theme.spacing(2),
       margin: theme.spacing(0),
       textAlign: "center",
+      display: "flex",
     },
     drawer: {
       padding: theme.spacing(2),
+    },
+    nameItem: {
+      display: "flex",
     },
   })
 );
@@ -51,19 +56,30 @@ const theme = createMuiTheme({
   },
 });
 
-function getInitialTimers(minStartTime: number, maxStartTime: number) {
-  const timers = "Air Bat Cap Drum Each Fine Gust Harp Sit Jury Krunch Look Made Near Odd Pit Quench Red Sun Trap".split(
-    " "
-  );
-  return timers.map((timerName, index) => ({
-    name: timerName,
+function createTimer(
+  name: string,
+  minStartTime: number,
+  maxStartTime: number,
+  key: number
+) {
+  return {
+    name: name,
     startTime: Math.floor(
       Math.random() * (maxStartTime - minStartTime) + minStartTime
     ),
     initialDelay: Math.floor(Math.random() * 1000),
     maxTime: 60,
-    key: index,
-  }));
+    key,
+  };
+}
+
+function getInitialTimers(minStartTime: number, maxStartTime: number) {
+  const timers = "Air Bat Cap Drum Each Fine Gust Harp Sit Jury Krunch Look Made Near Odd Pit Quench Red Sun Trap".split(
+    " "
+  );
+  return timers.map((timerName, index) =>
+    createTimer(timerName, minStartTime, maxStartTime, index)
+  );
 }
 
 const initialTimers = getInitialTimers(40, 60);
@@ -85,7 +101,7 @@ function WithTheme() {
 
   const updateMaxTime = (e: any) => {
     const value = parseInt(e.target.value, 10);
-    if(Number.isInteger(value)) {
+    if (Number.isInteger(value)) {
       setMaxTime(value);
     } else {
       setMaxTime(0);
@@ -93,7 +109,7 @@ function WithTheme() {
   };
   const updateMinTime = (e: any) => {
     const value = parseInt(e.target.value, 10);
-    if(Number.isInteger(value)) {
+    if (Number.isInteger(value)) {
       setMinStartTime(value);
     } else {
       setMinStartTime(0);
@@ -115,6 +131,19 @@ function WithTheme() {
     setTimers(newTimers);
   };
 
+  const addTimer = (name: string) => {
+    const newTimers = [...timers];
+    newTimers.push(
+      createTimer(
+        name,
+        minStartTime,
+        maxTime,
+        newTimers.map((timer) => timer.key).sort()[0]
+      )
+    );
+    setTimers(newTimers);
+  };
+
   const updateTimerName = (i: number, e: any) => {
     setTimers(
       timers.map((timer, index) => {
@@ -128,6 +157,32 @@ function WithTheme() {
         }
       })
     );
+  };
+
+  const save = () => {
+    const local = timers;
+    localStorage.setItem("timers", JSON.stringify(local));
+    localStorage.setItem("minStartTime", JSON.stringify(minStartTime));
+    localStorage.setItem("maxTime", JSON.stringify(maxTime));
+  };
+
+  const load = () => {
+    const savedTimers = localStorage.getItem("timers");
+    if(savedTimers) {
+      const timers = JSON.parse(savedTimers);
+      setTimers(timers);
+    } else {
+      window.alert('No timers saved in the session');
+    }
+
+    const savedMaxTime = localStorage.getItem("maxTime");
+    if(savedMaxTime) {
+      setMaxTime(JSON.parse(savedMaxTime));
+    }
+    const savedMinTime = localStorage.getItem("minStartTime");
+    if(savedMinTime) {
+      setMinStartTime(JSON.parse(savedMinTime));
+    }
   };
 
   return (
@@ -147,7 +202,7 @@ function WithTheme() {
               <ChevronLeftIcon />
             </IconButton>
             <Divider />
-            <Grid container xs={12} spacing={2}>
+            <Grid container spacing={2}>
               <Grid item xs={12} className={classes.settingsContainer}>
                 <TextField
                   label="Max Time (s)"
@@ -175,6 +230,16 @@ function WithTheme() {
                   Reset Timers
                 </Button>
               </Grid>
+              <Grid item xs={12}>
+                <Button onClick={load} variant="outlined" fullWidth>
+                  Load
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button onClick={save} variant="outlined" fullWidth>
+                  Save
+                </Button>
+              </Grid>
             </Grid>
             {timers.map((timer, i) => (
               <Grid
@@ -196,8 +261,8 @@ function WithTheme() {
                 </IconButton>
               </Grid>
             ))}
-            <Fab color="primary" aria-label="add">
-              <AddIcon />
+            <Fab onClick={() => addTimer("new")} color="primary" aria-label="add">
+              <AddIcon fontSize="large" />
             </Fab>
           </Box>
         </Drawer>
@@ -205,7 +270,6 @@ function WithTheme() {
           <Grid
             container
             spacing={4}
-            xs={12}
             className={classes.timerContainer}
           >
             {timers.map((timer) => (
